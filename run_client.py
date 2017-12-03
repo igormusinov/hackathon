@@ -32,18 +32,23 @@ class MyClient(hackathon_protocol.Client):
 
     def on_orderbook(self, cvs_line_values):
         data = []
-        
-        data = [cvs_line_values[i] for i in [4, 6, 8, 24, 26, 28]]
-        
+                
         bid_ps = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
         bid_vs = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
         ask_ps = [22, 24, 26, 28, 30, 32, 34, 36, 38, 40]
         ask_vs = [23, 25, 27, 29, 31, 33, 35, 37, 39, 41]
-        data.append( sum([cvs_line_values[i]*cvs_line_values[i+1] for i in bid_ps]) / sum([cvs_line_values[i]*cvs_line_values[i+1] for i in ask_ps]) )
         
-
+        data = [cvs_line_values[i] for i in bid_ps[1:]+ask_ps[1:]]
+        
+        t_sum_1 = sum([cvs_line_values[i]*cvs_line_values[i+1] for i in bid_ps])
+        t_sum_2 = sum([cvs_line_values[i]*cvs_line_values[i+1] for i in ask_ps])
+        
+        data.append( t_sum_1 / t_sum_2 )
+        data.append( t_sum_1 - t_sum_2 )
+        data.append( sum([cvs_line_values[i] for i in bid_vs]) / sum([cvs_line_values[i] for i in ask_vs]) )
+        
         self.last_raw = data
-
+        
     def make_prediction(self):
         assert self.last_raw is not None
         prediction = self.model.predict(self.last_raw)
