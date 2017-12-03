@@ -36,11 +36,11 @@ class MyClient(hackathon_protocol.Client):
         data = [cvs_line_values[i] for i in [4, 6, 8, 24, 26, 28]]
         
         bid_ps = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-        #bid_vs = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
+        bid_vs = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]
         ask_ps = [22, 24, 26, 28, 30, 32, 34, 36, 38, 40]
-        #ask_vs = [23, 25, 27, 29, 31, 33, 35, 37, 39, 41]
-        #data.append( sum([cvs_line_values[i]*cvs_line_values[i+1] for i in bid_ps]) / sum([cvs_line_values[i]*cvs_line_values[i+1] for i in ask_ps]) )
-        data.append( cvs_line_values[4] / cvs_line_values[24] )
+        ask_vs = [23, 25, 27, 29, 31, 33, 35, 37, 39, 41]
+        data.append( sum([cvs_line_values[i]*cvs_line_values[i+1] for i in bid_ps]) / sum([cvs_line_values[i]*cvs_line_values[i+1] for i in ask_ps]) )
+        
 
         self.last_raw = data
 
