@@ -21,7 +21,7 @@ class MyClient(hackathon_protocol.Client):
         self.target_instrument = 'TEA'
         self.send_login(USERNAME, PASSWORD)
         self.last_raw = None
-        #self.last_type = None
+        self.stor = [[0, 0]]
 
         # Load pre-trained model previously created by create_model.ipynb
         self.model = pickle.load(open('./my_model.txt', 'rb'))
@@ -46,12 +46,26 @@ class MyClient(hackathon_protocol.Client):
         data.append( t_sum_1 / t_sum_2 )
         data.append( t_sum_1 - t_sum_2 )
         data.append( sum([cvs_line_values[i] for i in bid_vs]) / sum([cvs_line_values[i] for i in ask_vs]) )
-        
+            
+        if cvs_line_values[0]=='TEA':
+            try:
+                data.append( cvs_line_values[4]-self.stor[0][0] )
+                data.append( cvs_line_values[24]-self.stor[0][1] )
+            except:
+                print('!!!')
+                self.stor.append( [cvs_line_values[4], cvs_line_values[24]] )
+        else:
+            data.append( 0 )
+            data.append( 0 )
+        #print('1', len(self.stor), len(data))
+        if len(self.stor)==1000:
+            self.stor = self.stor[1:][:]
+        #print('2', len(self.stor), len(data))
         self.last_raw = data
         
     def make_prediction(self):
         assert self.last_raw is not None
-        prediction = self.model.predict(self.last_raw)
+        prediction = self.model.predict([self.last_raw])
         answer = prediction[0]
         self.send_volatility(float(answer))
         self.last_raw = None
